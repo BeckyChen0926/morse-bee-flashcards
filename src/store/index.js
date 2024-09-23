@@ -3,6 +3,29 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+
+function preloadSounds() {
+  const dict = {
+    a: "https://upload.wikimedia.org/wikipedia/commons/f/f3/A_morse_code.ogg",
+    b: "https://upload.wikimedia.org/wikipedia/commons/b/b1/B_morse_code.ogg",
+  }
+  for (const letter in dict) {
+    const audio = new Audio();
+    audio.src = dict[letter];
+    audio.load();
+  }
+}
+
+preloadSounds();
+
+async function playLetter(state) {
+  var aooo = new Audio(state.currentQuestion.audio); // path to file
+  console.log(state.currentQuestion.audio);
+  aooo.play();
+  console.log("now playing: " + state.currentQuestion.answer);
+
+}
+
 export default new Vuex.Store({
   state: {
     // The state that we want to track in this application
@@ -10,7 +33,8 @@ export default new Vuex.Store({
     answeredQuestions: [], // Questions that have been correctly answered
     currentQuestion: {
       question: 'Sample question',
-      answer: 'Sample answer'
+      answer: 'Sample answer',
+      audio: 'https://upload.wikimedia.org/wikipedia/commons/f/f3/A_morse_code.ogg'
     }, // Will be overwritten immediately
     cardFlipped: false // Whether to show the question or answer
   },
@@ -19,6 +43,10 @@ export default new Vuex.Store({
       return state.currentQuestion.question
     },
     currentAnswer (state) {
+      if (state.cardFlipped) {
+        console.log('now should play:' + state.currentQuestion.answer);
+        playLetter(state);
+      }
       return state.currentQuestion.answer
     },
   },
