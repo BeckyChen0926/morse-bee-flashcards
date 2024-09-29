@@ -1,12 +1,37 @@
 [
   {
-    "answer": "• _",
-    "question": "A",
-    "audio": "https://upload.wikimedia.org/wikipedia/commons/f/f3/A_morse_code.ogg"
+    "answer": "•",
+    "question": "E",
+    "audio": "https://upload.wikimedia.org/wikipedia/commons/e/e7/E_morse_code.ogg"
   },
   {
-    "answer": "_ • • •",
-    "question": "B",
-    "audio":"https://upload.wikimedia.org/wikipedia/commons/b/b1/B_morse_code.ogg"
+    "answer": "• _ • •",
+    "question": "L",
+    "audio": "https://upload.wikimedia.org/wikipedia/commons/a/a8/L_morse_code.ogg"
+  },
+  {
+    "answer": "_ _ _",
+    "question": "O",
+    "audio": "https://upload.wikimedia.org/wikipedia/commons/4/41/O_morse_code.ogg"
+  },
+  {
+    "answer": "• _ _ •",
+    "question": "P",
+    "audio": "https://upload.wikimedia.org/wikipedia/commons/c/c6/P_morse_code.ogg"
+  },
+  {
+    "answer": "_ • _",
+    "question": "R",
+    "audio": "https://upload.wikimedia.org/wikipedia/commons/e/ea/R_morse_code.ogg"
+  },
+  {
+    "answer": "_",
+    "question": "T",
+    "audio": "https://upload.wikimedia.org/wikipedia/commons/b/ba/T_morse_code.ogg"
+  },
+  {
+    "answer": "• • •",
+    "question": "S",
+    "audio": "https://upload.wikimedia.org/wikipedia/commons/d/d8/S_morse_code.ogg"
   }
 ]

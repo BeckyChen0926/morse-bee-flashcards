@@ -6,8 +6,13 @@ Vue.use(Vuex)
 
 function preloadSounds() {
   const dict = {
-    a: "https://upload.wikimedia.org/wikipedia/commons/f/f3/A_morse_code.ogg",
-    b: "https://upload.wikimedia.org/wikipedia/commons/b/b1/B_morse_code.ogg",
+    e: "https://upload.wikimedia.org/wikipedia/commons/e/e7/E_morse_code.ogg",
+    l: "https://upload.wikimedia.org/wikipedia/commons/a/a8/L_morse_code.ogg",
+    o: "https://upload.wikimedia.org/wikipedia/commons/4/41/O_morse_code.ogg",
+    p: "https://upload.wikimedia.org/wikipedia/commons/c/c6/P_morse_code.ogg",
+    r: "https://upload.wikimedia.org/wikipedia/commons/e/ea/R_morse_code.ogg",
+    t: "https://upload.wikimedia.org/wikipedia/commons/b/ba/T_morse_code.ogg",
+    s: "https://upload.wikimedia.org/wikipedia/commons/d/d8/S_morse_code.ogg"
   }
   for (const letter in dict) {
     const audio = new Audio();

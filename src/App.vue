@@ -1,11 +1,12 @@
 <template>
   <div id="app">
-    <div class="score">Score: {{ score }}</div>
+    <!-- <div class="score">Score: {{ score }}</div> -->
+    <div class="score"></div>
     <flashcard :front="question" :back="answer"></flashcard>
 
     <div v-if="this.$store.state.cardFlipped">
-      <button @click="correct">Correct</button>
-      <button @click="wrong">Wrong</button>
+      <button @click="correct">Next</button>
+      <!-- <button @click="wrong">Wrong</button> -->
     </div>
   </div>
 </template>
