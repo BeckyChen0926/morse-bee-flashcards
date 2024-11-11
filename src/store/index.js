@@ -4,6 +4,10 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 
+let urlParams = new URLSearchParams(window.location.search);
+let pid = urlParams.get('PROLIFIC_PID');
+let dayNum = urlParams.get('day');
+
 function preloadSounds() {
   const dict = {
     e: "https://upload.wikimedia.org/wikipedia/commons/e/e7/E_morse_code.ogg",
@@ -42,7 +46,16 @@ export default new Vuex.Store({
       audio: 'https://upload.wikimedia.org/wikipedia/commons/f/f3/A_morse_code.ogg'
     }, // Will be overwritten immediately
     cardFlipped: false, // Whether to show the question or answer
-    questionsInCurrentCycle: []
+    questionsInCurrentCycle: [],
+
+    // for data tracking
+    flipsPerLetter: { E: 0, L: 0, O: 0, P: 0, R: 0, T: 0, S: 0 },
+    timePerLetter: { E: 0, L: 0, O: 0, P: 0, R: 0, T: 0, S: 0 },
+    roundsPerLetter: 0,
+    longestPause: 0,
+    numLongPause: 0,
+    lastInteractionTime: Date.now(), // To track pause times
+    startTime: Date.now(),
   },
   getters: {
     currentQuestion (state) {
@@ -57,32 +70,41 @@ export default new Vuex.Store({
     },
   },
   mutations: {
-    // The changes to the state that we'll be making
     setUnanswered(state, questions) {
       state.unansweredQuestions = questions;
       state.questionsInCurrentCycle = shuffleArray([...questions]); // Initialize with shuffled questions
     },
-    // pushUnanswered (state, question) {
-    //   // When a question was answered incorrectly
-    //   state.unansweredQuestions.push(question)
-    // },
-    // pushAnswered (state, question) {
-    //   // When a question was answered correctly
-    //   state.unansweredQuestions =
-    //     state.unansweredQuestions.filter((q) => q !== question)
-    //   state.answeredQuestions.push(question)
-    //   state.unansweredQuestions.push(question)
-    // },
     setCurrentQuestion (state, question) {
       // Setting the question to be rendered
       state.currentQuestion = question
       state.cardFlipped = false
     },
     flipCard (state) {
+      let letter = state.currentQuestion.question
+      // console.log(state.currentQuestion.question);
       state.cardFlipped = !state.cardFlipped
+      state.flipsPerLetter[letter]++;
+
+      const currentTime = Date.now();
+      const duration = (currentTime - state.lastInteractionTime) / 1000; // convert ms to seconds
+      state.timePerLetter[letter] += duration;
+
+      // Check for longest pause
+      if (duration > 10) {
+        state.numLongPause++;
+        if (duration > state.longestPause) {
+          state.longestPause = duration;
+        }
+      }
+      state.lastInteractionTime = currentTime; // Reset interaction time
+
+      // sendDataToSheet(pid, dayNum, 1, 'ELOPRTS', state.flipsPerLetter, state.timePerLetter, state.roundsPerLetter, state.longestPause, state.numLongPause);
+      // test with http://localhost:8080/?PROLIFIC_PID=6789&day=3
     },
     cycleQuestions(state) {
       if (state.questionsInCurrentCycle.length === 0) {
+        state.roundsPerLetter++;
+        sendDataToSheet(pid, dayNum, 'ELOPRTS', state.flipsPerLetter, state.timePerLetter, state.roundsPerLetter, state.longestPause, state.numLongPause);
         state.questionsInCurrentCycle = shuffleArray([...state.unansweredQuestions]); // Reshuffle after cycle completion
       }
       state.currentQuestion = state.questionsInCurrentCycle.pop(); // Get the next question
@@ -103,17 +125,6 @@ export default new Vuex.Store({
   },
 })
 
-// function randomQuestion (context) {
-//   const numQuestions = context.state.unansweredQuestions.length
-
-//   if (numQuestions > 0) {
-//     const randomIndex = Math.floor(numQuestions * Math.random())
-//     return context.state.unansweredQuestions[randomIndex]
-//   } else {
-//     return null
-//   }
-// }
-
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -121,3 +132,35 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+
+
+// longestpause = time of longest pau
+// numlongpause = # of pause > 10s with no interaction
+function sendDataToSheet(PID, dayNum, letters, flipsPerLetter, timePerLetter, roundsPerLetter, longestPause, numLongPause) {
+
+  let res_key = ["PID", "day","letters", "flipsPerLetter", "timePerLetter", "roundsPerLetter", "longestPause","numLongPause"];
+  let res_val = [PID, dayNum,letters,flipsPerLetter,timePerLetter,roundsPerLetter, longestPause, numLongPause];
+  var script_result = {};
+
+  res_key.forEach(function (k, i) {
+    script_result[k] = res_val[i];
+  })
+  console.log("----------------------------")
+  console.log(JSON.stringify(script_result));
+  console.log("----------------------------")
+
+  const url = "  https://script.google.com/macros/s/AKfycby78n3_Vy8VE3_lriDWixa4Qt2JCDwCHKuQMDV8Vko_yDcNrwm4KQ-U8EETHnPXp6-B/exec";
+
+  fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'no-cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow', // manual, *follow, error
+    body: JSON.stringify(script_result)
+  })
+}
+
