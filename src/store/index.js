@@ -29,9 +29,9 @@ preloadSounds();
 
 async function playLetter(state) {
   var aooo = new Audio(state.currentQuestion.audio); // path to file
-  console.log(state.currentQuestion.audio);
+  // console.log(state.currentQuestion.audio);
   aooo.play();
-  console.log("now playing: " + state.currentQuestion.answer);
+  // console.log("now playing: " + state.currentQuestion.answer);
 
 }
 
@@ -146,9 +146,9 @@ function sendDataToSheet(PID, dayNum, letters, flipsPerLetter, timePerLetter, ro
   res_key.forEach(function (k, i) {
     script_result[k] = res_val[i];
   })
-  console.log("----------------------------")
-  console.log(JSON.stringify(script_result));
-  console.log("----------------------------")
+  // console.log("----------------------------")
+  // console.log(JSON.stringify(script_result));
+  // console.log("----------------------------")
 
   const url = "  https://script.google.com/macros/s/AKfycby78n3_Vy8VE3_lriDWixa4Qt2JCDwCHKuQMDV8Vko_yDcNrwm4KQ-U8EETHnPXp6-B/exec";
 
